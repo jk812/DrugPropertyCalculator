@@ -1,1 +1,6 @@
 Data/mobivic
+.vscode
+build
+*.egginfo
+*egg-info
+__pycache__
