@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"] # setuptools and wheel are necessary for the build
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "DrugPropertyCalculator"
+version = "0.1.0"
+description = "A package to predict molecular properties"
+authors = [
+    {name = "Dan Criveanu", email = "dan.criveanu25@gmail.com"},
+    {name = "Matthew Mason"},
+    {name = "Jakob Kroboth"},
+    {name = "Tau Ibrahim"}
+]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "rdkit"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "ruff",
+]
+docs = [
+    "sphinx",
+]
+
+# [project.scripts]
+# ci-course = "ci_course.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# [tool.setuptools.package-data]
+# ci_course = ["data/*.csv"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B"]
+
+# The docstring rules are deliberately not selected here. The Docstrings
+# workflow runs them separately, with "ruff check --select D src/", so that
+# documentation is a stage of its own rather than more lint noise. The
+# convention below is what makes the full D set usable: it disables the rules
+# that contradict numpydoc, which is the style this package is written in.
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["property_prediction"]
+branch = true
