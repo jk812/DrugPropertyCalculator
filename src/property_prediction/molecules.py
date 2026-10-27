@@ -1,5 +1,5 @@
 from rdkit import Chem
-from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski
+from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, Crippen
 
 class Molecule:
     """Contains molecule properties, e.g. molecular weight (mw).
@@ -14,3 +14,4 @@ class Molecule:
         self.rot_bonds = rdMolDescriptors.CalcNumRotatableBonds(self._mol)
         self.hbd = Lipinski.NumHDonors(self._mol)
         self.hba = Lipinski.NumHAcceptors(self._mol)
+        self.logp = Crippen.MolLogP(self._mol)
