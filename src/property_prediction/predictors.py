@@ -1,9 +1,18 @@
-"""Absorption predictor methods"""
+"""Property predictor methods"""
 
 from dataclasses import dataclass
+from property_prediction import Molecule
 
-from property_prediction.molecules import Molecule
-
+class PropertyPredictor:
+    """Base class for property predictors.
+    """
+    @staticmethod
+    def calculate(mol:Molecule):
+        """Calculates the property of a molecule.
+        """
+        if not isinstance(mol, Molecule):
+            raise ValueError("Input must be a Molecule object.")
+        raise NotImplementedError("This method should be implemented by subclasses.")
 
 @dataclass(frozen=True)
 class RuleResult:
