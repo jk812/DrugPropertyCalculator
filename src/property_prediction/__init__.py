@@ -1,1 +1,1 @@
-from .molecules import Molecule
+from .molecules import Molecule, ListMol
