@@ -1,3 +1,5 @@
+"""Makes mol objects and list objects."""
+
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, Crippen
 
@@ -19,15 +21,14 @@ class Molecule:
         self.tpsa = Descriptors.TPSA(self._mol)
 
 class ListMol:
-    """Contains list of Molecule objects
-    """
+    """Contains list of Molecule objects."""
+
     def __init__(self, smileslist:list[str]):
         self.lis = [Molecule(smile) for smile in smileslist]
         self.check_for_duplicates()
 
     def check_for_duplicates(self):
-        """Removes duplicate Molecule objects from within the ListMol object.
-        """
+        """Remove duplicate Molecule objects from within the ListMol object."""
         unique = set()
         duplicate_idx = []
         for idx, object in enumerate(self.lis):
@@ -38,8 +39,10 @@ class ListMol:
         self.lis = [obj for idx, obj in enumerate(self.lis) if idx not in set(duplicate_idx)]
 
     def __len__(self):
+        """Len."""
         return len(self.lis)
 
     def __getitem__(self, idx):
+        """Getitem."""
         return self.lis[idx]
 

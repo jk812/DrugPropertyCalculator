@@ -1,3 +1,5 @@
+"""init."""
+
 from .molecules import Molecule, ListMol
 from .predictors import RuleResult, lipinski, veber
 
