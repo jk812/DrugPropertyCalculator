@@ -10,15 +10,8 @@ import pandas as pd
 def read_smiles_json(path: Path, smiles_column: str = "smiles") -> pd.DataFrame:
     """Load records keyed by source ID into a (source_id, smiles) frame."""
     frame = pd.read_json(path, orient="index")
-    check_smiles_col_present(path, smiles_column, frame)
-    return format_frame(frame, smiles_column)
-
-def check_smiles_col_present(path, smiles_column, dataframe):
-    """checks whether the smiles column is present in the dataframe"""
-    if smiles_column not in dataframe.columns:
-        raise ValueError(
-            f"{path.name} has no {smiles_column!r} column; found {list(dataframe.columns)}"
-        )
+    if smiles_column not in frame.columns:
+        raise ValueError(f"{path.name} has no {smiles_column!r} column; found {list(frame.columns)}")
 
 def format_frame(frame, smiles_column):
     frame = frame[[smiles_column]].rename_axis("source_id").reset_index()
