@@ -25,21 +25,34 @@ def test_molecule_creation(test, expect_raises):
     assert hasattr(mol, "hbd")
     assert hasattr(mol, "hba")
 
-@pytest.mark.parametrize(
-    "test, expect_raises",
-    [
-        (["CCO","CCCCO","CCCCCCCO"], ["CCO","CCCCO","CCCCCCCO"]),
-        (["CCO","CCO","CCCCCCCO"], ["CCO","CCCCCCCO"]),
-    ]
-)
-def test_list_mol_creation(test, expect_raises):
+@pytest.fixture()
+def listmol():
     from property_prediction import ListMol
+    return ListMol(["CCO","CCCCO","CCCCCCCO"])
+class TestListMol:
+    @pytest.mark.parametrize(
+        "test, expect_raises",
+        [
+            (["CCO","CCCCO","CCCCCCCO"], ["CCO","CCCCO","CCCCCCCO"]),
+            (["CCO","CCO","CCCCCCCO"], ["CCO","CCCCCCCO"]),
+        ]
+    )
+    def test_list_mol_creation(self, test, expect_raises):
+        from property_prediction import ListMol
 
-    listobject = ListMol(test)
-    listofmolobjects = listobject.lis
+        listobject = ListMol(test)
+        listofmolobjects = listobject.lis
 
-    output = []
-    for object in listofmolobjects:
-         output.append(object.smiles)
+        output = []
+        for object in listofmolobjects:
+            output.append(object.smiles)
 
-    npt.assert_array_equal(output, expect_raises)
+        npt.assert_array_equal(output, expect_raises)
+
+    def test_list_mol_len(self, listmol):
+        assert len(listmol) == 3
+
+    def test_list_mol_getitem(self, listmol):
+        assert listmol[0].smiles == "CCO"
+        assert listmol[1].smiles == "CCCCO"
+        assert listmol[2].smiles == "CCCCCCCO"
