@@ -1,4 +1,4 @@
-"""Property predictor methods"""
+"""Property predictor methods."""
 
 from dataclasses import dataclass
 from property_prediction import Molecule
@@ -13,7 +13,7 @@ class RuleResult:
 
 
 def lipinski(molecule: Molecule) -> RuleResult:
-    """Lipinski's rule of five"""
+    """Lipinski's rule of five."""
     violations = [
         f"{label} {value:.1f} > {limit}"
         for label, value, limit in (
@@ -28,7 +28,10 @@ def lipinski(molecule: Molecule) -> RuleResult:
 
 
 def veber(molecule: Molecule) -> RuleResult:
-    """Veber's rules: Requires 10 or fewer rotatable bonds, plus either a TPSA of 140 A^2 or
+    """
+    Veber's rules.
+
+    Requires 10 or fewer rotatable bonds, plus either a TPSA of 140 A^2 or
     less or a total hydrogen bond count of 12 or fewer. Both criteria must
     hold, but the polar surface criterion can be satisfied either way.
     """
@@ -53,16 +56,17 @@ def absorption(molecule: Molecule) -> list[RuleResult]:
 
 def solubility_category(solubility:float) -> str:
     """Categorize solubility based on the given solubility value.
+    
     The ranges used are the same as those used by SwissADME (https://www.nature.com/articles/srep42717).
     insoluble <-10 <poorly <-6 <moderately <-4 <soluble <-2 <very <0 <highly
 
     Args:
         solubility (float): _description_
 
-    Returns:
+    Returns
+    -------
         str: _description_
     """
-
     if solubility < -10:
         return "insoluble"
     elif solubility < -6:
@@ -95,7 +99,8 @@ def solubility(molecule: Molecule) -> float:
     Args:
         molecule (Molecule): The molecule for which to calculate solubility.
 
-    Returns:
+    Returns
+    -------
         float: The calculated solubility value.
     """
     if not hasattr(molecule, "ap"):

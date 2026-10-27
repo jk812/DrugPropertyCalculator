@@ -14,13 +14,14 @@ def read_smiles_json(path: Path, smiles_column: str = "smiles") -> pd.DataFrame:
     return format_frame(frame, smiles_column)
 
 def check_smiles_col_present(path, smiles_column, dataframe):
-    """checks whether the smiles column is present in the dataframe"""
+    """Check whether the smiles column is present in the dataframe."""
     if smiles_column not in dataframe.columns:
         raise ValueError(
             f"{path.name} has no {smiles_column!r} column; found {list(dataframe.columns)}"
         )
 
 def format_frame(frame, smiles_column):
+    """Format pandas datafram."""
     frame = frame[[smiles_column]].rename_axis("source_id").reset_index()
     return frame[frame[smiles_column].astype(str).str.strip().ne("")]
 
@@ -30,7 +31,7 @@ def write_csv(frame: pd.DataFrame, path: Path) -> None:
     frame.to_csv(path, index=False)
 
 def read_smiles_csv(csv_path, smiles_column: str = "smiles"):
-    """read in a .csv file of smiles"""
+    """Read in a .csv file of smiles."""
     frame = pd.read_csv(csv_path)
     check_smiles_col_present(csv_path, smiles_column, frame)
     return format_frame(frame, smiles_column)
