@@ -1,2 +1,2 @@
-from .molecules import Molecule, ListMol
-from .predictors import PropertyPredictor
+from .molecules import Molecule
+from .predictors import RuleResult, lipinski, veber

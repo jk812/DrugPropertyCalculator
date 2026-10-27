@@ -1,18 +1,10 @@
 import pytest
-import numpy as np
-import numpy.testing as npt
 
 
-@pytest.mark.parametrize(
-    "test, expect_raises",
-    [
-        ("CCO", None),
-        ("C1CCCCC1", None),
-        ("asdad", ValueError)
-    ]
-)
+@pytest.mark.parametrize("test, expect_raises", [("CCO", None), ("C1CCCCC1", None), ("asdad", ValueError)])
 def test_molecule_creation(test, expect_raises):
     from property_prediction import Molecule
+
     if expect_raises is not None:
         with pytest.raises(expect_raises):
             Molecule(test)
