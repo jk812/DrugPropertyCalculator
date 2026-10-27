@@ -17,7 +17,7 @@ class Molecule:
         self.hba = Lipinski.NumHAcceptors(self._mol)
         self.logp = Crippen.MolLogP(self._mol)
         self.tpsa = Descriptors.TPSA(self._mol)
-        
+
 class ListMol:
     """Contains list of Molecule objects
     """
@@ -26,12 +26,14 @@ class ListMol:
         self.check_for_duplicates()
 
     def check_for_duplicates(self):
+        """Removes duplicate Molecule objects from within the ListMol object.
+        """
         unique = set()
         duplicate_idx = []
         for idx, object in enumerate(self.lis):
             can_smi = object.smiles
             if can_smi in unique:
-                duplicate_idx.append(idx)  
+                duplicate_idx.append(idx)
             unique.add(can_smi)
         self.lis = [obj for idx, obj in enumerate(self.lis) if idx not in set(duplicate_idx)]
 
