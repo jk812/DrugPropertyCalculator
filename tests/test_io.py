@@ -11,17 +11,21 @@ from property_prediction.io import read_smiles_json, write_csv
 @pytest.fixture
 def smiles_json(tmp_path):
     path = tmp_path / "compounds.json"
-    path.write_text(json.dumps({
-        "CMP-001": {"smiles": "CCO", "name": "ethanol"},
-        "CMP-002": {"smiles": "", "name": "blank"},
-    }))
+    path.write_text(
+        json.dumps(
+            {
+                "CMP-001": {"smiles": "CCO", "name": "ethanol"},
+                "CMP-002": {"smiles": "", "name": "blank"},
+            }
+        )
+    )
     return path
 
 
 def test_reads_json_into_two_columns(smiles_json):
     frame = read_smiles_json(smiles_json)
     assert list(frame.columns) == ["source_id", "smiles"]
-    assert list(frame["source_id"]) == ["CMP-001"]   # blank row dropped
+    assert list(frame["source_id"]) == ["CMP-001"]  # blank row dropped
 
 
 def test_missing_column_raises(tmp_path):

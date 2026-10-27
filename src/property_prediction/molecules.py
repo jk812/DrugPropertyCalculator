@@ -3,9 +3,9 @@ from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, Crippen
 
 
 class Molecule:
-    """Contains molecule properties, e.g. molecular weight (mw).
-    """
-    def __init__(self, smiles:str):
+    """Contains molecule properties, e.g. molecular weight (mw)."""
+
+    def __init__(self, smiles: str):
         self._mol = Chem.MolFromSmiles(smiles)
         if self._mol is None:
             raise ValueError("Input SMILES string is invalid.")

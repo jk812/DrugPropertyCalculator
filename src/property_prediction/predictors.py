@@ -36,3 +36,27 @@ def lipinski(molecule: Molecule) -> RuleResult:
         if value > limit
     ]
     return RuleResult("lipinski", len(violations) <= 1, tuple(violations))
+
+
+def veber(molecule: Molecule) -> RuleResult:
+    """Veber's rules: Requires 10 or fewer rotatable bonds, plus either a TPSA of 140 A^2 or
+    less or a total hydrogen bond count of 12 or fewer. Both criteria must
+    hold, but the polar surface criterion can be satisfied either way.
+    """
+    violations = []
+
+    if molecule.rot_bonds > 10:
+        violations.append(f"rotatable bonds {molecule.rot_bonds} > 10")
+
+    hbond_total = molecule.hbd + molecule.hba
+    if molecule.tpsa > 140 and hbond_total > 12:
+        violations.append(f"TPSA {molecule.tpsa:.1f} > 140 and H-bonds {hbond_total} > 12")
+
+    return RuleResult("veber", not violations, tuple(violations))
+
+ABSORPTION_RULES = (lipinski, veber)
+
+
+def absorption(molecule: Molecule) -> list[RuleResult]:
+    """Apply every absorption rule to one molecule."""
+    return [rule(molecule) for rule in ABSORPTION_RULES]
