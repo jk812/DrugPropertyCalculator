@@ -1,5 +1,5 @@
 import pytest
-
+import numpy.testing as npt
 
 @pytest.mark.parametrize("test, expect_raises", [("CCO", None), ("C1CCCCC1", None), ("asdad", ValueError)])
 def test_molecule_creation(test, expect_raises):
