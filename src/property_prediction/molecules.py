@@ -24,7 +24,7 @@ class ListMol:
     def __init__(self, smileslist:list[str]):
         self.lis = [Molecule(smile) for smile in smileslist]
         self.check_for_duplicates()
-        
+
     def check_for_duplicates(self):
         unique = set()
         duplicate_idx = []
@@ -34,4 +34,10 @@ class ListMol:
                 duplicate_idx.append(idx)  
             unique.add(can_smi)
         self.lis = [obj for idx, obj in enumerate(self.lis) if idx not in set(duplicate_idx)]
+
+    def __len__(self):
+        return len(self.lis)
+
+    def __getitem__(self, idx):
+        return self.lis[idx]
 
