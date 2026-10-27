@@ -86,7 +86,8 @@ def aromatic_proportion(molecule: Molecule) -> float:
     Args:
         molecule (Molecule): The molecule for which to calculate aromatic proportion.
 
-    Returns:
+    Returns
+    -------
         float: The calculated aromatic proportion value.
     """
     num_aromatic_atoms = sum(1 for atom in molecule._mol.GetAtoms() if atom.GetIsAromatic())
