@@ -26,6 +26,8 @@ class ListMol:
         self.check_for_duplicates()
 
     def check_for_duplicates(self):
+        """Removes duplicate Molecule objects from within the ListMol object.
+        """
         unique = set()
         duplicate_idx = []
         for idx, object in enumerate(self.lis):
