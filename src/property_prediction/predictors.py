@@ -76,6 +76,19 @@ def solubility_category(solubility:float) -> str:
     else:
         return "highly soluble"
 
+def aromatic_proportion(molecule: Molecule) -> float:
+    """Calculate the aromatic proportion of a molecule.
+
+    Args:
+        molecule (Molecule): The molecule for which to calculate aromatic proportion.
+
+    Returns:
+        float: The calculated aromatic proportion value.
+    """
+    num_aromatic_atoms = sum(1 for atom in molecule._mol.GetAtoms() if atom.GetIsAromatic())
+    total_atoms = molecule._mol.GetNumAtoms()
+    return num_aromatic_atoms / total_atoms
+
 def solubility(molecule: Molecule) -> float:
     """Calculate the solubility of a molecule using the ESOL method.
 
@@ -85,12 +98,15 @@ def solubility(molecule: Molecule) -> float:
     Returns:
         float: The calculated solubility value.
     """
-    # ESOL formula: logS = 0.16 - 0.63 * logP - 0.0062 * MW + 0.066 * RB - 0.74 * HBD
+    if not hasattr(molecule, "ap"):
+        molecule.ap = aromatic_proportion(molecule)
+
+    # ESOL formula: logS = 0.16 - 0.63 * logP - 0.0062 * MW + 0.066 * RB - 0.74 * AP
     logS = (
         0.16
         - 0.63 * molecule.logp
         - 0.0062 * molecule.mw
         + 0.066 * molecule.rot_bonds
-        - 0.74 * molecule.hbd
+        - 0.74 * molecule.ap
     )
     return logS
