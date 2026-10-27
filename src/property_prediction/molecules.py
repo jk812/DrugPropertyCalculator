@@ -16,8 +16,8 @@ class Molecule:
         self.hbd = Lipinski.NumHDonors(self._mol)
         self.hba = Lipinski.NumHAcceptors(self._mol)
         self.logp = Crippen.MolLogP(self._mol)
-
-
+        self.tpsa = Descriptors.TPSA(self._mol)
+        
 class ListMol:
     """Contains list of Molecule objects
     """
