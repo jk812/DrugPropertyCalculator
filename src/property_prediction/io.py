@@ -11,9 +11,7 @@ def read_smiles_json(path: Path, smiles_column: str = "smiles") -> pd.DataFrame:
     """Load records keyed by source ID into a (source_id, smiles) frame."""
     frame = pd.read_json(path, orient="index")
     if smiles_column not in frame.columns:
-        raise ValueError(
-            f"{path.name} has no {smiles_column!r} column; found {list(frame.columns)}"
-        )
+        raise ValueError(f"{path.name} has no {smiles_column!r} column; found {list(frame.columns)}")
 
     frame = frame[[smiles_column]].rename_axis("source_id").reset_index()
     return frame[frame[smiles_column].astype(str).str.strip().ne("")]
