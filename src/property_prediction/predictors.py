@@ -49,3 +49,48 @@ ABSORPTION_RULES = (lipinski, veber)
 def absorption(molecule: Molecule) -> list[RuleResult]:
     """Apply every absorption rule to one molecule."""
     return [rule(molecule) for rule in ABSORPTION_RULES]
+
+
+def solubility_category(solubility:float) -> str:
+    """Categorize solubility based on the given solubility value.
+    The ranges used are the same as those used by SwissADME (https://www.nature.com/articles/srep42717).
+    insoluble <-10 <poorly <-6 <moderately <-4 <soluble <-2 <very <0 <highly
+
+    Args:
+        solubility (float): _description_
+
+    Returns:
+        str: _description_
+    """
+
+    if solubility < -10:
+        return "insoluble"
+    elif solubility < -6:
+        return "poorly soluble"
+    elif solubility < -4:
+        return "moderately soluble"
+    elif solubility < -2:
+        return "soluble"
+    elif solubility < 0:
+        return "very soluble"
+    else:
+        return "highly soluble"
+
+def solubility(molecule: Molecule) -> float:
+    """Calculate the solubility of a molecule using the ESOL method.
+
+    Args:
+        molecule (Molecule): The molecule for which to calculate solubility.
+
+    Returns:
+        float: The calculated solubility value.
+    """
+    # ESOL formula: logS = 0.16 - 0.63 * logP - 0.0062 * MW + 0.066 * RB - 0.74 * HBD
+    logS = (
+        0.16
+        - 0.63 * molecule.logp
+        - 0.0062 * molecule.mw
+        + 0.066 * molecule.rot_bonds
+        - 0.74 * molecule.hbd
+    )
+    return logS
