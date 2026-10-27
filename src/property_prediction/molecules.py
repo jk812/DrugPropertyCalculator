@@ -1,6 +1,7 @@
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, Crippen
 
+
 class Molecule:
     """Contains molecule properties, e.g. molecular weight (mw).
     """
@@ -15,3 +16,22 @@ class Molecule:
         self.hbd = Lipinski.NumHDonors(self._mol)
         self.hba = Lipinski.NumHAcceptors(self._mol)
         self.logp = Crippen.MolLogP(self._mol)
+
+
+class ListMol:
+    """Contains list of Molecule objects
+    """
+    def __init__(self, smileslist:list[str]):
+        self.lis = [Molecule(smile) for smile in smileslist]
+        self.check_for_duplicates()
+        
+    def check_for_duplicates(self):
+        unique = set()
+        duplicate_idx = []
+        for idx, object in enumerate(self.lis):
+            can_smi = object.smiles
+            if can_smi in unique:
+                duplicate_idx.append(idx)  
+            unique.add(can_smi)
+        self.lis = [obj for idx, obj in enumerate(self.lis) if idx not in set(duplicate_idx)]
+
