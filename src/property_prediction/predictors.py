@@ -56,7 +56,7 @@ def absorption(molecule: Molecule) -> list[RuleResult]:
 
 def solubility_category(solubility:float) -> str:
     """Categorize solubility based on the given solubility value.
-    
+
     The ranges used are the same as those used by SwissADME (https://www.nature.com/articles/srep42717).
     insoluble <-10 <poorly <-6 <moderately <-4 <soluble <-2 <very <0 <highly
 
