@@ -45,4 +45,3 @@ class ListMol:
     def __getitem__(self, idx):
         """Getitem."""
         return self.lis[idx]
-
