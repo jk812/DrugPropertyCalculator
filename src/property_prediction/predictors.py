@@ -1,7 +1,10 @@
 """Property predictor methods."""
 
+from __future__ import annotations
 from dataclasses import dataclass
-from .molecules import Molecule
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .molecules import Molecule
 
 predictors_list = []
 
