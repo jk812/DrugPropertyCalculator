@@ -7,7 +7,7 @@ name = "drug-property-calculator-DJMT"
 version = "0.1.1"
 description = "A package to predict molecular properties"
 authors = [
-    {name = "Dan Criveanu", email = "dan.criveanu25@gmail.com"},
+    {name = "Dan Criveanu"},
     {name = "Matthew Mason"},
     {name = "Jakob Kroboth"},
     {name = "Tau Ibrahim"}
