@@ -6,8 +6,8 @@ from property_prediction import Molecule
 predictors_list = []
 
 def update_molecule(func):
-    """Decorator to update a molecule in-place with the result of a predictor function,
-    adding the result as an attribute."""
+    """Update a molecule in-place with the result of a predictor function, adding the result as an attribute."""
+
     def wrapper(molecule: Molecule):
         val = func(molecule)
         setattr(molecule, func.__name__.lower(), val)
