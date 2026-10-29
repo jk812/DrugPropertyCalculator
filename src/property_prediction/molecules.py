@@ -2,7 +2,7 @@
 
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, Crippen
-
+from predictors import predictors_list
 
 class Molecule:
     """Contains molecule properties, e.g. molecular weight (mw)."""
@@ -45,3 +45,7 @@ class ListMol:
     def __getitem__(self, idx):
         """Getitem."""
         return self.lis[idx]
+
+    def predict_all(self):
+        for prediction in predictors_list:
+            prediction(self)
