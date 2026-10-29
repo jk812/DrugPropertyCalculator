@@ -1,7 +1,7 @@
 """Property predictor methods."""
 
 from dataclasses import dataclass
-from property_prediction import Molecule
+from .molecules import Molecule
 
 predictors_list = []
 

@@ -2,7 +2,7 @@
 
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, Crippen
-from property_prediction import predictors_list
+from .predictors import predictors_list
 
 class Molecule:
     """Contains molecule properties, e.g. molecular weight (mw)."""
