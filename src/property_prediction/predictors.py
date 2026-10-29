@@ -3,6 +3,18 @@
 from dataclasses import dataclass
 from property_prediction import Molecule
 
+predictors_list = []
+
+def update_molecule(func):
+    """Update a molecule in-place with the result of a predictor function, adding the result as an attribute."""
+
+    def wrapper(molecule: Molecule):
+        val = func(molecule)
+        setattr(molecule, func.__name__.lower(), val)
+        return val
+    predictors_list.append(wrapper)
+    return wrapper
+
 @dataclass(frozen=True)
 class RuleResult:
     """The outcome of a rule-based predictor."""
@@ -11,9 +23,27 @@ class RuleResult:
     passes: bool
     violations: tuple[str, ...] = ()
 
+@update_molecule
+def lipinski(molecule: Molecule) -> bool:
+    """Lipinski's rule of five. Returns True if the molecule passes, False otherwise.
 
-def lipinski(molecule: Molecule) -> RuleResult:
-    """Lipinski's rule of five."""
+    Requires 1 or fewer violations of the following:
+    - MW <= 500
+    - logP <= 5
+    - HBD <= 5
+    - HBA <= 10
+    """
+    mw_condition = molecule.mw <= 500
+    logp_condition = molecule.logp <= 5
+    hbd_condition = molecule.hbd <= 5
+    hba_condition = molecule.hba <= 10
+    conditions = [mw_condition, logp_condition, hbd_condition, hba_condition]
+    violations = sum(not condition for condition in conditions)
+    return violations <= 1
+
+
+def lipinski_detail(molecule: Molecule) -> RuleResult:
+    """Lipinski's rule of five, with detailed violation information."""
     violations = [
         f"{label} {value:.1f} > {limit}"
         for label, value, limit in (
@@ -26,10 +56,20 @@ def lipinski(molecule: Molecule) -> RuleResult:
     ]
     return RuleResult("lipinski", len(violations) <= 1, tuple(violations))
 
+@update_molecule
+def veber(molecule: Molecule) -> bool:
+    """Veber's rules. Returns True if the molecule passes, False otherwise.
 
-def veber(molecule: Molecule) -> RuleResult:
+    Requires 10 or fewer rotatable bonds, plus a TPSA of 140 A^2 or
+    less, both of which must be true for a molecule to pass.
     """
-    Veber's rules.
+    rot_bonds_condition = molecule.rot_bonds <= 10
+    polar_surface_condition = molecule.tpsa <= 140
+    return rot_bonds_condition and polar_surface_condition
+
+def veber_detail(molecule: Molecule) -> RuleResult:
+    """
+    Veber's rules, with detailed violation information.
 
     Requires 10 or fewer rotatable bonds, plus either a TPSA of 140 A^2 or
     less or a total hydrogen bond count of 12 or fewer. Both criteria must
@@ -46,12 +86,18 @@ def veber(molecule: Molecule) -> RuleResult:
 
     return RuleResult("veber", not violations, tuple(violations))
 
-ABSORPTION_RULES = (lipinski, veber)
+@update_molecule
+def bioavailability(molecule: Molecule) -> bool:
+    """Apply both Lipinski's rule of five and Veber's rules."""
+    lipinski_result = lipinski(molecule)
+    veber_result = veber(molecule)
+    return lipinski_result and veber_result
 
+BIOAVAILABILITY_RULES = (lipinski_detail, veber_detail)
 
-def absorption(molecule: Molecule) -> list[RuleResult]:
-    """Apply every absorption rule to one molecule."""
-    return [rule(molecule) for rule in ABSORPTION_RULES]
+def bioavailability_detail(molecule: Molecule) -> list[RuleResult]:
+    """Apply every bioavailability rule to one molecule."""
+    return [rule(molecule) for rule in BIOAVAILABILITY_RULES]
 
 
 def solubility_category(solubility:float) -> str:
@@ -80,6 +126,7 @@ def solubility_category(solubility:float) -> str:
     else:
         return "highly soluble"
 
+@update_molecule
 def aromatic_proportion(molecule: Molecule) -> float:
     """Calculate the aromatic proportion of a molecule.
 
@@ -94,8 +141,9 @@ def aromatic_proportion(molecule: Molecule) -> float:
     total_atoms = molecule._mol.GetNumAtoms()
     return num_aromatic_atoms / total_atoms
 
-def solubility(molecule: Molecule) -> float:
-    """Calculate the solubility of a molecule using the ESOL method.
+@update_molecule
+def logS(molecule: Molecule) -> float:
+    """Calculate the solubility of a molecule using Delaney's ESOL method.
 
     Args:
         molecule (Molecule): The molecule for which to calculate solubility.
@@ -104,8 +152,7 @@ def solubility(molecule: Molecule) -> float:
     -------
         float: The calculated solubility value.
     """
-    if not hasattr(molecule, "ap"):
-        molecule.ap = aromatic_proportion(molecule)
+    aromatic_proportion(molecule)
 
     # ESOL formula: logS = 0.16 - 0.63 * logP - 0.0062 * MW + 0.066 * RB - 0.74 * AP
     logS = (
@@ -113,6 +160,6 @@ def solubility(molecule: Molecule) -> float:
         - 0.63 * molecule.logp
         - 0.0062 * molecule.mw
         + 0.066 * molecule.rot_bonds
-        - 0.74 * molecule.ap
+        - 0.74 * molecule.aromatic_proportion
     )
     return logS
