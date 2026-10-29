@@ -5,7 +5,7 @@ import pandas as pd
 from matplotlib.axes import Axes
 
 from property_prediction.molecules import Molecule
-from property_prediction.predictors import absorption
+from property_prediction.predictors import bioavailability_detail
 
 
 def assess(frame: pd.DataFrame) -> pd.DataFrame:
@@ -13,7 +13,7 @@ def assess(frame: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for smiles in frame["smiles"]:
         molecule = Molecule(smiles)
-        row = {r.name: r.passes for r in absorption(molecule)}
+        row = {r.name: r.passes for r in bioavailability_detail(molecule)}
         row["logp"] = molecule.logp
         row["tpsa"] = molecule.tpsa
         rows.append(row)
