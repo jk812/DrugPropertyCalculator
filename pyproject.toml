@@ -3,8 +3,8 @@ requires = ["setuptools>=77", "wheel"] # setuptools and wheel are necessary for 
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "DrugPropertyCalculator"
-version = "0.1.0"
+name = "drug-property-calculator-DJMT"
+version = "0.1.1"
 description = "A package to predict molecular properties"
 authors = [
     {name = "Dan Criveanu", email = "dan.criveanu25@gmail.com"},
@@ -17,10 +17,10 @@ license = "MIT"
 license-files = ["LICENSE"]
 requires-python = "<=3.13"
 dependencies = [
-    "numpy",
-    "pandas",
-    "matplotlib",
-    "rdkit"
+    "numpy==2.5.4",
+    "pandas==3.0.6",
+    "matplotlib==3.11.2",
+    "rdkit==2026.9.1"
 ]
 
 [project.optional-dependencies]
