@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "drug-property-calculator-DJMT"
-version = "0.1.1"
+version = "0.1.3"
 description = "A package to predict molecular properties"
 authors = [
     {name = "Dan Criveanu"},
