@@ -11,8 +11,9 @@ get the code
 Clone the repo and enter the project directory
 
 .. code-block:: console
-    git clone https://github.com/jk812/DrugPropertyCalculator/blob/main/.github/workflows/pages.yml
-    cd DrugPropertyCalculator
+
+   git clone https://github.com/jk812/DrugPropertyCalculator.git
+   cd DrugPropertyCalculator
 
 Create a virtual enviroment
 ---------------------------
