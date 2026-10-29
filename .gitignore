@@ -9,3 +9,4 @@ __pycache__
 .coverage
 .pytest_cache
 .venv
+docs/_build/html/*
