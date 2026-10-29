@@ -5,6 +5,8 @@ from unittest.mock import patch
 import pytest
 import pandas as pd
 from property_prediction.pipeline import create_smiles_list
+from property_prediction.pipeline import create_mol_list
+from property_prediction.molecules import ListMol
 
 class TestReadFile():
 
@@ -31,7 +33,7 @@ class TestReadFile():
             read_file('test.zip')
 
 
-class TestCreateMolList():
+class TestCreateSmilesList():
     def setup_class(self):
         self.smiles_df = pd.DataFrame({
             "source_id": [1, 2, 3, 4],
@@ -53,3 +55,11 @@ class TestCreateMolList():
     def test_create_smiles_list_throws_error(self):
         with pytest.raises(KeyError):
             create_smiles_list(self.non_smiles_df)
+
+class TestCreateMolList():
+    def check_mol_list_object_is_created(self):
+        smiles_list = ['C', 'CO', 'CCO', 'CCOO']
+        expected_mol_list = ListMol(smiles_list)
+        created_mol_list = create_mol_list(smiles_list)
+        assert isinstance(created_mol_list, ListMol)
+        assert created_mol_list.len() == expected_mol_list.len()

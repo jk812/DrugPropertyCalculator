@@ -2,12 +2,14 @@
 import argparse
 import os
 from .io import read_smiles_csv, read_smiles_json
+from .molecules import ListMol
 
 def pipeline(filename):
     """Run user pipeline end-to-end"""
     print(f"Begin processing {filename}")
     smiles_df = read_file(filename)
     smiles_list = create_smiles_list(smiles_df)
+    list_mol = create_mol_list(smiles_list)
 
 
 def read_file(filename):
@@ -21,6 +23,9 @@ def read_file(filename):
 
 def create_smiles_list(smiles_df):
         return smiles_df["smiles"].to_list()
+
+def create_mol_list(smiles_list):
+     return ListMol(smiles_list)
 
 def main():
     parser = argparse.ArgumentParser(
