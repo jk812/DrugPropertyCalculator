@@ -47,5 +47,6 @@ class ListMol:
         return self.lis[idx]
 
     def predict_all(self):
+        "predictall."
         for prediction in predictors_list:
             prediction(self)
