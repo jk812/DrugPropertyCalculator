@@ -6,7 +6,9 @@ from .io import read_smiles_csv, read_smiles_json
 def pipeline(filename):
     """Run user pipeline end-to-end"""
     print(f"Begin processing {filename}")
-    df = read_file(filename)
+    smiles_df = read_file(filename)
+    smiles_list = create_smiles_list(smiles_df)
+
 
 def read_file(filename):
     file_extension = os.path.splitext(filename)[1]
@@ -17,6 +19,8 @@ def read_file(filename):
     else:
         raise TypeError("File Type in currently not supported, please add request to add")
 
+def create_smiles_list(smiles_df):
+        return smiles_df["smiles"].to_list()
 
 def main():
     parser = argparse.ArgumentParser(

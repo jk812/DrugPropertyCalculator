@@ -1,8 +1,10 @@
 """Test the pipeline funtionality"""
+from property_prediction import pipeline
 from property_prediction.pipeline import read_file
-# from property_prediction.io import read_smiles_json, read_smiles_csv
 from unittest.mock import patch
 import pytest
+import pandas as pd
+from property_prediction.pipeline import create_smiles_list
 
 class TestReadFile():
 
@@ -27,3 +29,27 @@ class TestReadFile():
     def test_read_file_name_invalid_filename(self):
         with pytest.raises(TypeError):
             read_file('test.zip')
+
+
+class TestCreateMolList():
+    def setup_class(self):
+        self.smiles_df = pd.DataFrame({
+            "source_id": [1, 2, 3, 4],
+            "smiles": ['C', 'CO', 'CCO', 'CCOO'],
+            "name": ['Methane', 'methanol', 'ethanol', 'etanoic acid']
+        })
+        self.non_smiles_df = pd.DataFrame({
+            "source_id": [1, 2, 3, 4],
+            "not_smiles": ['C', 'CO', 'CCO', 'CCOO'],
+            "name": ['Methane', 'methanol', 'ethanol', 'etanoic acid']
+        })
+
+    def test_create_smiles_list_returns_list(self):
+        assert isinstance(create_smiles_list(self.smiles_df), list)
+
+    def test_create_smiles_list_returns_corret_list(self):
+        assert create_smiles_list(self.smiles_df) == ['C', 'CO', 'CCO', 'CCOO']
+
+    def test_create_smiles_list_throws_error(self):
+        with pytest.raises(KeyError):
+            create_smiles_list(self.non_smiles_df)
