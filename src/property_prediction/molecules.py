@@ -3,6 +3,7 @@
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors, Lipinski, Crippen
 from .predictors import predictors_list
+import pandas as pd
 
 class Molecule:
     """Contains molecule properties, e.g. molecular weight (mw)."""
@@ -51,3 +52,19 @@ class ListMol:
         for mol in self:
             for prediction in predictors_list:
                 prediction(mol)
+
+    def return_df(self):
+        """Extract the predicted results from a ListMol object to a DataFrame.
+
+            Args:
+                self - (ListMol): ListMol object (containing Molecule objects) with predicted properties.
+
+            Returns
+            -------
+                pd.DataFrame: DataFrame containing the predicted properties for each molecule.
+        """
+        results = []
+        for molecule in self:
+            row = molecule.__dict__.copy()
+            row = {k: v for k, v in row.items() if not k.startswith('_')}
+        return pd.DataFrame(results)

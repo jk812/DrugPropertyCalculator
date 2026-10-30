@@ -4,9 +4,7 @@ from unittest.mock import patch
 import pytest
 import pandas as pd
 from pathlib import Path
-from pandas.testing import assert_frame_equal
 from property_prediction.pipeline import create_smiles_list
-from property_prediction.pipeline import extract_predictor_results_to_df
 from property_prediction.pipeline import write_predicted_results_to_csv
 from property_prediction.molecules import ListMol
 from property_prediction.pipeline import pipeline
@@ -60,32 +58,6 @@ class TestCreateSmilesList():
         with pytest.raises(KeyError):
             create_smiles_list(self.non_smiles_df)
 
-class TestExtractPredictorResultsToDf():
-    def setup_class(self):
-        self.mol_list1 = ListMol(['CCO', 'COC', 'COOC'])
-        self.mol_list2 = ListMol(['', '', ''])
-
-    def test_dataframe_created(self):
-        result1 = extract_predictor_results_to_df(self.mol_list1)
-        result2 = extract_predictor_results_to_df(self.mol_list2)
-        assert isinstance(result1, pd.DataFrame)
-        assert isinstance(result2, pd.DataFrame)
-
-    def test_correct_values_passed_to_df(self):
-        for molecule in self.mol_list1:
-            smi = molecule.smiles
-            molecule.__dict__ = {
-                "smiles": smi,
-                "lipinski": True,
-                "logp": 2.5
-            }
-        expected_df = pd.DataFrame({
-            "smiles": ['CCO', 'COC', 'COOC'],
-            "lipinski": [True, True, True],
-            "logp": [2.5, 2.5, 2.5]
-        })
-        assert_frame_equal(extract_predictor_results_to_df(self.mol_list1), expected_df)
-
 class TestWritePredictedResultsToCSV():
     def setup_class(self):
         self.test_df = pd.DataFrame({
@@ -103,7 +75,7 @@ class TestWritePredictedResultsToCSV():
 class TestPipeline():
 
     @patch('property_prediction.pipeline.write_predicted_results_to_csv')
-    @patch('property_prediction.pipeline.extract_predictor_results_to_df')
+    @patch('property_prediction.pipeline.ListMol.return_df')
     @patch('property_prediction.pipeline.ListMol')
     @patch('property_prediction.pipeline.create_smiles_list')
     @patch('property_prediction.pipeline.read_file')
@@ -111,7 +83,7 @@ class TestPipeline():
                                                     mock_read_file,
                                                     mock_create_smiles_list,
                                                     mock_ListMol,
-                                                    mock_extract_predictor_results_to_df,
+                                                    mock_ListMol_return_df,
                                                     mock_write_predicted_results_to_csv):
         filename = 'testfilename.csv'
 
@@ -119,9 +91,9 @@ class TestPipeline():
         mock_read_file.assert_called_once_with(filename)
         mock_create_smiles_list.assert_called_once_with(mock_read_file.return_value)
         mock_ListMol.assert_called_once_with(mock_create_smiles_list.return_value)
-        mock_extract_predictor_results_to_df.assert_called_once_with(mock_ListMol.return_value)
+        mock_ListMol.return_value.return_df.assert_called_once()
         mock_write_predicted_results_to_csv.assert_called_once_with(
-            mock_extract_predictor_results_to_df.return_value,
+            mock_ListMol_return_df.return_value,
             filename
             )
 

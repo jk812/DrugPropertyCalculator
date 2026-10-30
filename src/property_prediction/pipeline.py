@@ -30,7 +30,7 @@ def pipeline(filename):
     list_mol.predict_all()
     print("Properties predicted...")
 
-    results_df = extract_predictor_results_to_df(list_mol)
+    results_df = list_mol.return_df()
     print("Predicted Properties written to dataframe...")
 
     output_file = write_predicted_results_to_csv(results_df, filename)
@@ -72,22 +72,6 @@ def create_smiles_list(smiles_df: pd.DataFrame) -> list[str]:
     """
     return smiles_df["smiles"].to_list()
 
-def extract_predictor_results_to_df(list_mol: ListMol) -> pd.DataFrame:
-    """Extract the predicted results from a ListMol object to a DataFrame.
-
-    Args:
-        list_mol (ListMol): ListMol object (containing Molecule objects) with predicted properties.
-
-    Returns
-    -------
-        pd.DataFrame: DataFrame containing the predicted properties for each molecule.
-    """
-    results = []
-    for molecule in list_mol:
-        row = molecule.__dict__.copy()
-        row = {k: v for k, v in row.items() if not k.startswith('_')}  # Exclude non-public attributes
-        results.append(row)
-    return pd.DataFrame(results)
 
 def write_predicted_results_to_csv(results_df: pd.DataFrame, filename: str) -> str:
     """Write the predicted results to a CSV file.
