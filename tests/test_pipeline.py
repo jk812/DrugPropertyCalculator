@@ -10,6 +10,8 @@ from property_prediction.pipeline import create_mol_list
 from property_prediction.pipeline import extract_predictor_results_to_df
 from property_prediction.pipeline import write_predicted_results_to_csv
 from property_prediction.molecules import ListMol
+from property_prediction.pipeline import pipeline
+from property_prediction.pipeline import main
 
 class TestReadFile():
 
@@ -105,10 +107,32 @@ class TestWritePredictedResultsToCSV():
         assert write_predicted_results_to_csv(self.test_df, input_filename) == expected_output_filename
         mock_write_csv.assert_called_once_with(self.test_df, expected_output_filename)
 
-        # def test_read_file_name_csv(self, mock_write_csv):
-        #         mock_read_csv.return_value = ['C', 'CNO']
+class TestPipeline():
 
-        #         result = read_file('test.csv')
+    @patch('property_prediction.pipeline.write_predicted_results_to_csv')
+    @patch('property_prediction.pipeline.extract_predictor_results_to_df')
+    @patch('property_prediction.pipeline.create_mol_list')
+    @patch('property_prediction.pipeline.create_smiles_list')
+    @patch('property_prediction.pipeline.read_file')
+    def test_pipeline_calls_all_relevant_functions(self,
+                                                    mock_read_file,
+                                                    mock_create_smiles_list,
+                                                    mock_create_mol_list,
+                                                    mock_extract_predictor_results_to_df,
+                                                    mock_write_predicted_results_to_csv):
+        filename = 'testfilename.csv'
 
-        #         mock_read_csv.assert_called_once_with('test.csv')
-        #         assert result == ['C', 'CNO']
+        pipeline(filename)
+        mock_read_file.assert_called_once_with(filename)
+        mock_create_smiles_list.assert_called_once_with(mock_read_file.return_value)
+        mock_create_mol_list.assert_called_once_with(mock_create_smiles_list.return_value)
+        mock_create_mol_list.return_value.predict_all.assert_called_once()
+        mock_extract_predictor_results_to_df.assert_called_once_with(mock_create_mol_list.return_value)
+        mock_write_predicted_results_to_csv.assert_called_once_with(mock_extract_predictor_results_to_df.return_value, filename)
+
+def TestMain():
+
+    @patch('property_prediction.pipeline.write_predicted_results_to_csv')
+    def test_main_calls_pipeline(self, mock_pipeline):
+        main()
+        mock_pipeline.assert_called_once()
