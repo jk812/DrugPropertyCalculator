@@ -1,5 +1,6 @@
 import pytest
 import numpy.testing as npt
+import pandas as pd
 
 @pytest.mark.parametrize("test, expect_raises", [("CCO", None), ("C1CCCCC1", None), ("asdad", ValueError)])
 def test_molecule_creation(test, expect_raises):
@@ -56,7 +57,6 @@ class TestListMol:
 
     def test_return_df(self, listmol):
         from property_prediction import ListMol
-        import pandas as pd
 
         listmol2 = ListMol(['', '', ''])
 
@@ -65,3 +65,7 @@ class TestListMol:
 
         assert isinstance(result1, pd.DataFrame)
         assert isinstance(result2, pd.DataFrame)
+
+    def test_return_something_df(self, listmol):
+        returned_df = listmol.return_df()
+        assert returned_df.shape != (0,0)

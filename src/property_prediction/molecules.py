@@ -67,4 +67,5 @@ class ListMol:
         for molecule in self:
             row = molecule.__dict__.copy()
             row = {k: v for k, v in row.items() if not k.startswith('_')}
+            results.append(row)
         return pd.DataFrame(results)
