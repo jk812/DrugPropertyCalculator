@@ -107,10 +107,25 @@ class TestWritePredictedResultsToCSV():
         assert write_predicted_results_to_csv(self.test_df, input_filename) == expected_output_filename
         mock_write_csv.assert_called_once_with(self.test_df, expected_output_filename)
 
-        # def test_read_file_name_csv(self, mock_write_csv):
-        #         mock_read_csv.return_value = ['C', 'CNO']
-        
-        #         result = read_file('test.csv')
-        
-        #         mock_read_csv.assert_called_once_with('test.csv')
-        #         assert result == ['C', 'CNO']
+class TestPipeline():
+
+    @patch('property_prediction.pipeline.write_predicted_results_to_csv')
+    @patch('property_prediction.pipeline.extract_predictor_results_to_df')
+    @patch('property_prediction.pipeline.create_mol_list')
+    @patch('property_prediction.pipeline.create_smiles_list')
+    @patch('property_prediction.pipeline.read_file')
+    def test_pipeline_calls_all_relevant_functions(self,
+                                                    mock_read_file,
+                                                    mock_create_smiles_list,
+                                                    mock_create_mol_list,
+                                                    mock_extract_predictor_results_to_df,
+                                                    mock_write_predicted_results_to_csv):
+        filename = 'testfilename.csv'
+
+        pipeline.pipeline(filename)
+        mock_read_file.assert_called_once_with(filename)
+        mock_create_smiles_list.assert_called_once_with(mock_read_file.return_value)
+        mock_create_mol_list.assert_called_once_with(mock_create_smiles_list.return_value)
+        mock_create_mol_list.return_value.predict_all.assert_called_once()
+        mock_extract_predictor_results_to_df.assert_called_once_with(mock_create_mol_list.return_value)
+        mock_write_predicted_results_to_csv.assert_called_once_with(mock_extract_predictor_results_to_df.return_value, filename)
