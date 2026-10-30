@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
+from functools import wraps
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .molecules import Molecule
@@ -13,7 +14,7 @@ def update_molecule(func):
 
     def wrapper(molecule: Molecule):
         val = func(molecule)
-        setattr(molecule, func.__name__.lower(), val)
+        molecule.predictions[func.__name__.lower()] = val
         return val
     predictors_list.append(wrapper)
     return wrapper
@@ -155,7 +156,7 @@ def logS(molecule: Molecule) -> float:
     -------
         float: The calculated solubility value.
     """
-    aromatic_proportion(molecule)
+    molecule.aromatic_proportion = aromatic_proportion(molecule)
 
     # ESOL formula: logS = 0.16 - 0.63 * logP - 0.0062 * MW + 0.066 * RB - 0.74 * AP
     logS = (

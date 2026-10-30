@@ -4,9 +4,12 @@ from property_prediction.pipeline import read_file
 from unittest.mock import patch
 import pytest
 import pandas as pd
+from pandas.testing import assert_frame_equal
 from property_prediction.pipeline import create_smiles_list
 from property_prediction.pipeline import create_mol_list
+from property_prediction.pipeline import extract_predictor_results_to_df
 from property_prediction.molecules import ListMol
+from property_prediction.molecules import Molecule
 
 class TestReadFile():
 
@@ -63,3 +66,27 @@ class TestCreateMolList():
         created_mol_list = create_mol_list(smiles_list)
         assert isinstance(created_mol_list, ListMol)
         assert created_mol_list.len() == expected_mol_list.len()
+
+class TestExtractPredictorResultsToDf():
+    def setup_class(self):
+        self.mol_list1 = ListMol(['CCO', 'COC', 'COOC'])
+        self.mol_list2 = ListMol(['', '', ''])
+
+    def test_dataframe_created(self):
+        result1 = extract_predictor_results_to_df(self.mol_list1)
+        result2 = extract_predictor_results_to_df(self.mol_list2)
+        assert isinstance(result1, pd.DataFrame)
+        assert isinstance(result2, pd.DataFrame)
+
+    def test_correct_values_passed_to_df(self):
+        for molecule in self.mol_list1:
+            molecule.predictions = {
+                "lipinski": True,
+                "logp": 2.5
+            }
+        expected_df = pd.DataFrame({
+            "smiles": ['CCO', 'COC', 'COOC'],
+            "lipinski": [True, True, True],
+            "logp": [2.5, 2.5, 2.5]
+        })
+        assert_frame_equal(extract_predictor_results_to_df(self.mol_list1), expected_df)
