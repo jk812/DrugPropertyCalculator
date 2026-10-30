@@ -4,10 +4,8 @@ from unittest.mock import patch
 import pytest
 import pandas as pd
 from pathlib import Path
-from pandas.testing import assert_frame_equal
 from property_prediction.pipeline import create_smiles_list
 from property_prediction.pipeline import create_mol_list
-from property_prediction.pipeline import extract_predictor_results_to_df
 from property_prediction.pipeline import write_predicted_results_to_csv
 from property_prediction.molecules import ListMol
 from property_prediction.pipeline import pipeline
@@ -69,29 +67,6 @@ class TestCreateMolList():
         assert isinstance(created_mol_list, ListMol)
         assert created_mol_list.len() == expected_mol_list.len()
 
-class TestExtractPredictorResultsToDf():
-    def setup_class(self):
-        self.mol_list1 = ListMol(['CCO', 'COC', 'COOC'])
-        self.mol_list2 = ListMol(['', '', ''])
-
-    def test_dataframe_created(self):
-        result1 = extract_predictor_results_to_df(self.mol_list1)
-        result2 = extract_predictor_results_to_df(self.mol_list2)
-        assert isinstance(result1, pd.DataFrame)
-        assert isinstance(result2, pd.DataFrame)
-
-    def test_correct_values_passed_to_df(self):
-        for molecule in self.mol_list1:
-            molecule.predictions = {
-                "lipinski": True,
-                "logp": 2.5
-            }
-        expected_df = pd.DataFrame({
-            "smiles": ['CCO', 'COC', 'COOC'],
-            "lipinski": [True, True, True],
-            "logp": [2.5, 2.5, 2.5]
-        })
-        assert_frame_equal(extract_predictor_results_to_df(self.mol_list1), expected_df)
 
 class TestWritePredictedResultsToCSV():
     def setup_class(self):
@@ -127,7 +102,7 @@ class TestPipeline():
         mock_create_smiles_list.assert_called_once_with(mock_read_file.return_value)
         mock_create_mol_list.assert_called_once_with(mock_create_smiles_list.return_value)
         mock_create_mol_list.return_value.predict_all.assert_called_once()
-        mock_extract_predictor_results_to_df.assert_called_once_with(mock_create_mol_list.return_value)
+        mock_create_mol_list.return_value.return_df.assert_called_once()
         mock_write_predicted_results_to_csv.assert_called_once_with(mock_extract_predictor_results_to_df.return_value,
                                                                      filename)
 
