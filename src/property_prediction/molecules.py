@@ -56,12 +56,12 @@ class ListMol:
     def return_df(self):
         """Extract the predicted results from a ListMol object to a DataFrame.
 
-            Args:
-                self - (ListMol): ListMol object (containing Molecule objects) with predicted properties.
+        Args:
+            self - (ListMol): ListMol object (containing Molecule objects) with predicted properties.
 
-            Returns
-            -------
-                pd.DataFrame: DataFrame containing the predicted properties for each molecule.
+        Returns
+        -------
+            pd.DataFrame: DataFrame containing the predicted properties for each molecule.
         """
         results = []
         for molecule in self:
