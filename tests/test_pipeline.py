@@ -128,7 +128,8 @@ class TestPipeline():
         mock_create_mol_list.assert_called_once_with(mock_create_smiles_list.return_value)
         mock_create_mol_list.return_value.predict_all.assert_called_once()
         mock_extract_predictor_results_to_df.assert_called_once_with(mock_create_mol_list.return_value)
-        mock_write_predicted_results_to_csv.assert_called_once_with(mock_extract_predictor_results_to_df.return_value, filename)
+        mock_write_predicted_results_to_csv.assert_called_once_with(mock_extract_predictor_results_to_df.return_value,
+                                                                     filename)
 
 def TestMain():
 
