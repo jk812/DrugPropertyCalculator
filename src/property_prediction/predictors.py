@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from functools import wraps
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .molecules import Molecule

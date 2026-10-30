@@ -1,5 +1,4 @@
 """Test the pipeline funtionality"""
-from property_prediction import pipeline
 from property_prediction.pipeline import read_file
 from unittest.mock import patch
 import pytest
@@ -11,7 +10,8 @@ from property_prediction.pipeline import create_mol_list
 from property_prediction.pipeline import extract_predictor_results_to_df
 from property_prediction.pipeline import write_predicted_results_to_csv
 from property_prediction.molecules import ListMol
-from property_prediction.molecules import Molecule
+from property_prediction.pipeline import pipeline
+from property_prediction.pipeline import main
 
 class TestReadFile():
 
@@ -122,10 +122,17 @@ class TestPipeline():
                                                     mock_write_predicted_results_to_csv):
         filename = 'testfilename.csv'
 
-        pipeline.pipeline(filename)
+        pipeline(filename)
         mock_read_file.assert_called_once_with(filename)
         mock_create_smiles_list.assert_called_once_with(mock_read_file.return_value)
         mock_create_mol_list.assert_called_once_with(mock_create_smiles_list.return_value)
         mock_create_mol_list.return_value.predict_all.assert_called_once()
         mock_extract_predictor_results_to_df.assert_called_once_with(mock_create_mol_list.return_value)
         mock_write_predicted_results_to_csv.assert_called_once_with(mock_extract_predictor_results_to_df.return_value, filename)
+
+def TestMain():
+
+    @patch('property_prediction.pipeline.write_predicted_results_to_csv')
+    def test_main_calls_pipeline(self, mock_pipeline):
+        main()
+        mock_pipeline.assert_called_once()
