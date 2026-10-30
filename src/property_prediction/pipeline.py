@@ -22,7 +22,7 @@ def pipeline(filename):
     smiles_list = create_smiles_list(smiles_df)
     print("Smiles list created...")
 
-    list_mol = create_mol_list(smiles_list) # func not needed as ListMol constructor handles this
+    list_mol = ListMol(smiles_list)
     print("Mol objects created...")
 
     list_mol.predict_all()
@@ -69,18 +69,6 @@ def create_smiles_list(smiles_df: pd.DataFrame) -> list[str]:
         list[str]: A list of SMILES strings.
     """
     return smiles_df["smiles"].to_list()
-
-def create_mol_list(smiles_list: list[str]) -> ListMol: # func not needed as ListMol constructor handles this
-    """Create a ListMol from a list of SMILES strings.
-
-    Args:
-        smiles_list (list[str]): _description_
-
-    Returns
-    -------
-        ListMol: _description_
-    """
-    return ListMol(smiles_list)
 
 def extract_predictor_results_to_df(list_mol: ListMol) -> pd.DataFrame:
     """Extract the predicted results from a ListMol object to a DataFrame.
