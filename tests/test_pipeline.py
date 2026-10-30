@@ -6,7 +6,6 @@ import pandas as pd
 from pathlib import Path
 from property_prediction.pipeline import create_smiles_list
 from property_prediction.pipeline import write_predicted_results_to_csv
-from property_prediction.molecules import ListMol
 from property_prediction.pipeline import pipeline
 from property_prediction.pipeline import main
 

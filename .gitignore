@@ -11,3 +11,4 @@ __pycache__
 .venv
 docs/_build/html/*
 dist/*
+data/raw/*output*.csv
