@@ -20,6 +20,8 @@ class Molecule:
         self.logp = Crippen.MolLogP(self._mol)
         self.tpsa = Descriptors.TPSA(self._mol)
 
+        self.predictions = {}
+
 class ListMol:
     """Contains list of Molecule objects."""
 
@@ -48,5 +50,6 @@ class ListMol:
 
     def predict_all(self):
         """Apply all predictors to all Molecule objects in the ListMol object."""
-        for prediction in predictors_list:
-            prediction(self)
+        for mol in self:
+            for prediction in predictors_list:
+                prediction(mol)
