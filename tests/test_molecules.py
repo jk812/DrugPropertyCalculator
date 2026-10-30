@@ -48,3 +48,8 @@ class TestListMol:
         assert listmol[0].smiles == "CCO"
         assert listmol[1].smiles == "CCCCO"
         assert listmol[2].smiles == "CCCCCCCO"
+
+    def test_predict_all(self, listmol):
+        listmol.predict_all()
+        assert listmol[0].lipinski
+        assert listmol[1].veber
