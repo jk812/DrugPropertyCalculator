@@ -74,25 +74,28 @@ class TestWritePredictedResultsToCSV():
 class TestPipeline():
 
     @patch('property_prediction.pipeline.write_predicted_results_to_csv')
-    @patch('property_prediction.pipeline.ListMol.return_df')
-    @patch('property_prediction.pipeline.ListMol')
+    @patch('property_prediction.pipeline.ListMol', autospec=True)
     @patch('property_prediction.pipeline.create_smiles_list')
     @patch('property_prediction.pipeline.read_file')
     def test_pipeline_calls_all_relevant_functions(self,
                                                     mock_read_file,
                                                     mock_create_smiles_list,
                                                     mock_ListMol,
-                                                    mock_ListMol_return_df,
                                                     mock_write_predicted_results_to_csv):
+        from unittest.mock import call
+
         filename = 'testfilename.csv'
+        results_df = pd.DataFrame({'smiles': ['CCO'], 'lipinski': [True]})
+        mock_list_mol = mock_ListMol.return_value
+        mock_list_mol.return_df.return_value = results_df
 
         pipeline(filename)
         mock_read_file.assert_called_once_with(filename)
         mock_create_smiles_list.assert_called_once_with(mock_read_file.return_value)
         mock_ListMol.assert_called_once_with(mock_create_smiles_list.return_value)
-        mock_ListMol.return_value.return_df.assert_called_once()
+        assert mock_list_mol.mock_calls == [call.predict_all(), call.return_df()]
         mock_write_predicted_results_to_csv.assert_called_once_with(
-            mock_ListMol_return_df.return_value,
+            results_df,
             filename
             )
 
