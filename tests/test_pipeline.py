@@ -4,10 +4,12 @@ from property_prediction.pipeline import read_file
 from unittest.mock import patch
 import pytest
 import pandas as pd
+from pathlib import Path
 from pandas.testing import assert_frame_equal
 from property_prediction.pipeline import create_smiles_list
 from property_prediction.pipeline import create_mol_list
 from property_prediction.pipeline import extract_predictor_results_to_df
+from property_prediction.pipeline import write_predicted_results_to_csv
 from property_prediction.molecules import ListMol
 from property_prediction.molecules import Molecule
 
@@ -90,3 +92,25 @@ class TestExtractPredictorResultsToDf():
             "logp": [2.5, 2.5, 2.5]
         })
         assert_frame_equal(extract_predictor_results_to_df(self.mol_list1), expected_df)
+
+class TestWritePredictedResultsToCSV():
+    def setup_class(self):
+        self.test_df = pd.DataFrame({
+            "smiles": ['C', 'N'],
+            "lipinski": [True, False]
+        })
+
+    @patch('property_prediction.pipeline.write_csv')
+    def test_write_predicted_results_to_csv_returns_correct_output_filename(self, mock_write_csv):
+        input_filename = 'test_smiles.csv'
+        expected_output_filename = Path('test_smiles_output.csv')
+        assert write_predicted_results_to_csv(self.test_df, input_filename) == expected_output_filename
+        mock_write_csv.assert_called_once_with(self.test_df, expected_output_filename)
+
+        # def test_read_file_name_csv(self, mock_write_csv):
+        #         mock_read_csv.return_value = ['C', 'CNO']
+        
+        #         result = read_file('test.csv')
+        
+        #         mock_read_csv.assert_called_once_with('test.csv')
+        #         assert result == ['C', 'CNO']

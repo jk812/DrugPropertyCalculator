@@ -2,7 +2,8 @@
 import argparse
 import os
 import pandas as pd
-from property_prediction.io import read_smiles_json, read_smiles_csv
+from pathlib import Path
+from property_prediction.io import read_smiles_json, read_smiles_csv, write_csv
 from property_prediction.molecules import ListMol
 
 def pipeline(filename):
@@ -23,6 +24,9 @@ def pipeline(filename):
 
     results_df = extract_predictor_results_to_df(list_mol)
     print("Predicted Properties written to dataframe...")
+
+    output_file = write_predicted_results_to_csv(results_df, filename)
+    print(f"Predicted Properties written to: {output_file}")
     # visualise
     # write to file
 
@@ -48,6 +52,12 @@ def extract_predictor_results_to_df(list_mol):
         row.update(molecule.predictions)
         results.append(row)
     return pd.DataFrame(results)
+
+def write_predicted_results_to_csv(results_df, filename):
+    input_filename = Path(filename)
+    output_filename = input_filename.with_name(input_filename.stem + "_output.csv")
+    write_csv(results_df, output_filename)
+    return output_filename
 
 def main():
     parser = argparse.ArgumentParser(
