@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """Pipeline script for the user to run."""
 import argparse
 import os
@@ -82,8 +84,8 @@ def extract_predictor_results_to_df(list_mol: ListMol) -> pd.DataFrame:
     """
     results = []
     for molecule in list_mol:
-        row = {"smiles": molecule.smiles}
-        row.update(molecule.predictions)
+        row = molecule.__dict__.copy()
+        row = {k: v for k, v in row.items() if not k.startswith('_')}  # Exclude non-public attributes
         results.append(row)
     return pd.DataFrame(results)
 

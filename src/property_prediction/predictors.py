@@ -13,7 +13,7 @@ def update_molecule(func):
 
     def wrapper(molecule: Molecule):
         val = func(molecule)
-        molecule.predictions[func.__name__.lower()] = val
+        setattr(molecule, func.__name__.lower(), val)
         return val
     predictors_list.append(wrapper)
     return wrapper
