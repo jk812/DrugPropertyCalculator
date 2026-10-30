@@ -24,6 +24,29 @@ python -m pip install -e ".[dev]"
 
 On Windows, activate the environment with `.venv\Scripts\activate` instead. The package dependencies include RDKit, NumPy, pandas, and Matplotlib. Install the optional documentation tools with `python -m pip install -e ".[dev,docs]"`.
 
+## Run with Docker
+
+The package is also published as a container image.
+
+```bash
+docker container run --rm ibtau/drugpropertycalculator pytest
+docker container run --rm ibtau/drugpropertycalculator python scripts/prepare_data.py
+```
+
+The image is on Docker Hub at
+[ibtau/drugpropertycalculator](https://hub.docker.com/r/ibtau/drugpropertycalculator)
+and includes the package, its dependencies, the test suite, the example
+scripts and `data/raw/`.
+
+To build it from this repository instead:
+
+```bash
+docker image build -t drugpropertycalculator .
+```
+
+The published image is built for arm64. On an Intel or AMD machine, build
+locally with `--platform linux/amd64`.
+
 ## Use the package
 
 ```python

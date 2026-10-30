@@ -155,7 +155,7 @@ def logS(molecule: Molecule) -> float:
     -------
         float: The calculated solubility value.
     """
-    aromatic_proportion(molecule)
+    molecule.aromatic_proportion = aromatic_proportion(molecule)
 
     # ESOL formula: logS = 0.16 - 0.63 * logP - 0.0062 * MW + 0.066 * RB - 0.74 * AP
     logS = (

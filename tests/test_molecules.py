@@ -1,5 +1,6 @@
 import pytest
 import numpy.testing as npt
+import pandas as pd
 
 @pytest.mark.parametrize("test, expect_raises", [("CCO", None), ("C1CCCCC1", None), ("asdad", ValueError)])
 def test_molecule_creation(test, expect_raises):
@@ -48,3 +49,23 @@ class TestListMol:
         assert listmol[0].smiles == "CCO"
         assert listmol[1].smiles == "CCCCO"
         assert listmol[2].smiles == "CCCCCCCO"
+
+    def test_predict_all(self, listmol):
+        listmol.predict_all()
+        assert listmol[0].lipinski
+        assert listmol[1].veber
+
+    def test_return_df(self, listmol):
+        from property_prediction import ListMol
+
+        listmol2 = ListMol(['', '', ''])
+
+        result1 = listmol.return_df()
+        result2 = listmol2.return_df()
+
+        assert isinstance(result1, pd.DataFrame)
+        assert isinstance(result2, pd.DataFrame)
+
+    def test_return_something_df(self, listmol):
+        returned_df = listmol.return_df()
+        assert returned_df.shape != (0,0)

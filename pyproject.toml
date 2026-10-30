@@ -34,6 +34,9 @@ docs = [
     "sphinx",
 ]
 
+[project.scripts]
+pipeline = "property_prediction.pipeline:main"
+
 # [project.scripts]
 # ci-course = "ci_course.cli:main"
 
