@@ -20,8 +20,6 @@ class Molecule:
         self.logp = Crippen.MolLogP(self._mol)
         self.tpsa = Descriptors.TPSA(self._mol)
 
-        self.predictions = {}
-
 class ListMol:
     """Contains list of Molecule objects."""
 

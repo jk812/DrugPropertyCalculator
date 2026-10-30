@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """Pipeline script for the user to run."""
 import argparse
 import os
@@ -22,7 +24,7 @@ def pipeline(filename):
     smiles_list = create_smiles_list(smiles_df)
     print("Smiles list created...")
 
-    list_mol = create_mol_list(smiles_list) # func not needed as ListMol constructor handles this
+    list_mol = ListMol(smiles_list)
     print("Mol objects created...")
 
     list_mol.predict_all()
@@ -70,18 +72,6 @@ def create_smiles_list(smiles_df: pd.DataFrame) -> list[str]:
     """
     return smiles_df["smiles"].to_list()
 
-def create_mol_list(smiles_list: list[str]) -> ListMol: # func not needed as ListMol constructor handles this
-    """Create a ListMol from a list of SMILES strings.
-
-    Args:
-        smiles_list (list[str]): _description_
-
-    Returns
-    -------
-        ListMol: _description_
-    """
-    return ListMol(smiles_list)
-
 def extract_predictor_results_to_df(list_mol: ListMol) -> pd.DataFrame:
     """Extract the predicted results from a ListMol object to a DataFrame.
 
@@ -94,8 +84,8 @@ def extract_predictor_results_to_df(list_mol: ListMol) -> pd.DataFrame:
     """
     results = []
     for molecule in list_mol:
-        row = {"smiles": molecule.smiles}
-        row.update(molecule.predictions)
+        row = molecule.__dict__.copy()
+        row = {k: v for k, v in row.items() if not k.startswith('_')}  # Exclude non-public attributes
         results.append(row)
     return pd.DataFrame(results)
 
