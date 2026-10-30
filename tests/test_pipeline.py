@@ -1,5 +1,4 @@
 """Test the pipeline funtionality"""
-from property_prediction import pipeline
 from property_prediction.pipeline import read_file
 from unittest.mock import patch
 import pytest
@@ -11,7 +10,6 @@ from property_prediction.pipeline import create_mol_list
 from property_prediction.pipeline import extract_predictor_results_to_df
 from property_prediction.pipeline import write_predicted_results_to_csv
 from property_prediction.molecules import ListMol
-from property_prediction.molecules import Molecule
 
 class TestReadFile():
 
@@ -109,8 +107,8 @@ class TestWritePredictedResultsToCSV():
 
         # def test_read_file_name_csv(self, mock_write_csv):
         #         mock_read_csv.return_value = ['C', 'CNO']
-        
+
         #         result = read_file('test.csv')
-        
+
         #         mock_read_csv.assert_called_once_with('test.csv')
         #         assert result == ['C', 'CNO']
